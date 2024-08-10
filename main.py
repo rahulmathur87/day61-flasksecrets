@@ -1,4 +1,13 @@
 from flask import Flask, render_template
+from flask_wtf import FlaskForm
+from wtforms import StringField
+from wtforms.validators import DataRequired
+
+
+class MyForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired()])
+    password = StringField('Password', validators=[DataRequired()])
+
 
 '''
 Red underlines? Install the required packages first: 
@@ -13,8 +22,8 @@ pip3 install -r requirements.txt
 This will install the packages from requirements.txt for this project.
 '''
 
-
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 
 
 @app.route("/")
@@ -24,7 +33,8 @@ def home():
 
 @app.route("/login")
 def login():
-    return render_template('login.html')
+    form = MyForm()
+    return render_template('login.html', form=form)
 
 
 if __name__ == '__main__':
