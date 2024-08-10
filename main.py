@@ -1,12 +1,12 @@
 from flask import Flask, render_template
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email, Length
 
 
 class MyForm(FlaskForm):
-    email = StringField('Email')
-    password = PasswordField('Password')
+    email = StringField('Email', validators=[DataRequired(), Email(message='Invalid email address.')])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8, message='Password must be at least 8 characters long')])
     submit = SubmitField(label='Log In')
 
 
@@ -19,9 +19,10 @@ def home():
     return render_template('index.html')
 
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
     form = MyForm()
+    form.validate_on_submit()
     return render_template('login.html', form=form)
 
 
